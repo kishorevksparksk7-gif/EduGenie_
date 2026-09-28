@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EduGenie</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to EduGenie 🧠✨</h1>
+        <p>Your personal AI tutor for learning support!</p>
+
+        <div class="card">
+            <h3>Ask a Question</h3>
+            <input id="q" placeholder="Why is the sky blue?">
+            <button onclick="askQ()">Get Answer</button>
+            <div id="qaResult" class="output"></div>
+        </div>
+
+        <div class="card">
+            <h3>Need an Explanation?</h3>
+            <input id="topic" placeholder="Photosynthesis">
+            <button onclick="explain()">Explain</button>
+            <div id="expResult" class="output"></div>
+        </div>
+
+        <div class="card">
+            <h3>Summarize a Paragraph</h3>
+            <textarea id="sumText" placeholder="Paste long text..."></textarea>
+            <button onclick="summarize()">Summarize</button>
+            <div id="sumResult" class="output"></div>
+        </div>
+
+        <div class="card">
+            <h3>Generate a Quiz</h3>
+            <input id="quizText" placeholder="Solar System">
+            <button onclick="quiz()">Generate Quiz</button>
+            <div id="quizResult" class="output"></div>
+        </div>
+
+        <div class="card">
+            <h3>Learning Recommendations</h3>
+            <input id="learnTopic" placeholder="SQL">
+            <button onclick="learn()">Get Recommendations</button>
+            <div id="learnResult" class="output"></div>
+        </div>
+    </div>
+
+    <script>
+        async function handle(url, options, resultId, key) {
+            const div = document.getElementById(resultId);
+            div.innerText = "Loading...";
+            try {
+                const res = await fetch(url, options);
+                const data = await res.json();
+                const val = data[key];
+                div.innerText = typeof val === 'object' ? JSON.stringify(val, null, 2) : val;
+            } catch (e) {
+                div.innerText = "Error: " + e.message;
+            }
+        }
+        function askQ() { handle('/qa?question=' + encodeURIComponent(document.getElementById('q').value), {}, 'qaResult', 'answer'); }
+        function explain() { handle('/explain', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({topic: document.getElementById('topic').value})}, 'expResult', 'explanation'); }
+        function summarize() { handle('/summarize', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({text: document.getElementById('sumText').value})}, 'sumResult', 'summary'); }
+        function quiz() { handle('/quiz', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({text: document.getElementById('quizText').value})}, 'quizResult', 'quiz'); }
+        function learn() { handle('/learn/recommendations?topic=' + encodeURIComponent(document.getElementById('learnTopic').value), {}, 'learnResult', 'recommendation'); }
+    </script>
+</body>
+</html>
