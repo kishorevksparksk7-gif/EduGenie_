@@ -3,7 +3,9 @@ __pycache__/
 .env
 *.pyc
 *.db
-*.pdf
-*.docx
-*.txt
-!requirements.txt
+static/uploads/*
+!static/uploads/.gitkeep
+static/panels/*
+!static/panels/.gitkeep
+static/exports/*
+!static/exports/.gitkeep
